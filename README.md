@@ -64,3 +64,21 @@ Note: version 0.12.0 is used.
 kubectl create ns cert-manager
 kubectl apply -f cert-manager-no-webhook.yaml # don't specify namespace
 ```
+
+## Strapi (orc namespace)
+
+* Create pods
+```
+kubectl create ns orc
+kubectl -n orc create -f strapi.yaml
+```
+
+* Manually change PV's reclaim policy to retain
+```
+persistentVolumeReclaimPolicy: Retain
+```
+
+* Create ingress
+```
+kubectl -n orc create -f ingress-orc.yaml
+```
