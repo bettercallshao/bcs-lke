@@ -41,3 +41,26 @@ GRANT ALL ON DATABASE <db> TO <user>;
 kubectl -n cockroachdb port-forward svc/cockroachdb 8080:8080
 ```
 * Install DBeaver which has support for CockroachDB
+
+## Set up Nginx ingress
+
+Reference: https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nginx-ingress-with-cert-manager-on-digitalocean-kubernetes
+
+An example of an ingress is `ingress-bar.yaml`.
+
+* Create the pods and service
+```
+kubectl create -f nginx-ingress.yaml
+```
+
+## Set up Cert Manager
+
+Reference: https://www.getambassador.io/user-guide/cert-manager/
+
+Note: version 0.12.0 is used.
+
+* Create the pods
+```
+kubectl create ns cert-manager
+kubectl apply -f cert-manager-no-webhook.yaml # don't specify namespace
+```
