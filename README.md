@@ -82,3 +82,17 @@ persistentVolumeReclaimPolicy: Retain
 ```
 kubectl -n orc create -f ingress-orc.yaml
 ```
+
+## Set up linkerd
+
+* Run official installation
+```
+linkerd install | kubectl apply -f -
+```
+
+* Tap orc and nginx
+```
+kubectl -n orc get statefulset -o yaml | linkerd inject - | kubectl apply -f -
+kubectl -n ingress-nginx get deployments -o yaml | linkerd inject - | kubectl apply -f -
+linkerd dashboard
+```
