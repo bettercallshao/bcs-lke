@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cgar
+spec:
+  selector:
+    matchLabels:
+      app: cgar
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cgar
+    spec:
+      containers:
+      - name: cgar
+        volumeMounts:
+        - name: secret
+          mountPath: "/secret"
+        image: bettercallshao/cgar:latest
+        env:
+        - name: CONFIG_PATH
+          value: "/secret/config.yaml"
+        - name: PORT
+          value: "80"
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 60
+      volumes:
+      - name: secret
+        configMap:
+          name: cgar-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cgar-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: cgar

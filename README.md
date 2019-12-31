@@ -83,19 +83,6 @@ persistentVolumeReclaimPolicy: Retain
 kubectl -n orc create -f ingress-orc.yaml
 ```
 
-## Set up linkerd
-
-* Run official installation
-```
-linkerd install | kubectl apply -f -
-```
-
-* Tap orc and nginx
-```
-kubectl -n orc get statefulset -o yaml | linkerd inject - | kubectl apply -f -
-kubectl -n ingress-nginx get deployments -o yaml | linkerd inject - | kubectl apply -f -
-linkerd dashboard
-```
 ## Set up minio
 
 Reference: https://github.com/minio/minio/blob/master/docs/orchestration/kubernetes/k8s-yaml.md#minio-standalone-server-deployment
@@ -112,4 +99,37 @@ kubectl -n minio edit cm minio-keys
 kubectl -n minio create -f minio-standalone-deployment.yaml
 kubectl -n minio create -f minio-standalone-pvc.yaml
 kubectl -n minio create -f minio-standalone-service.yaml
+```
+
+## cgar
+
+* Create config map
+```
+kubectl create ns cgar
+kubectl -n cgar create cm cgar-config --from-file=config.yaml=./secret/config.yaml
+```
+
+* Create resources
+```
+kubectl -n cgar create -f cgar.yaml
+```
+
+* Create ingress
+```
+kubectl -n cgar create -f ingress-cgar.yaml
+```
+
+## Set up linkerd
+
+* Run official installation
+```
+linkerd install | kubectl apply -f -
+```
+
+* Tap orc and nginx
+```
+kubectl -n orc get statefulset -o yaml | linkerd inject - | kubectl apply -f -
+kubectl -n cgar get deployments -o yaml | linkerd inject - | kubectl apply -f -
+kubectl -n ingress-nginx get deployments -o yaml | linkerd inject - | kubectl apply -f -
+linkerd dashboard
 ```
