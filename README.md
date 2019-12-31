@@ -96,3 +96,20 @@ kubectl -n orc get statefulset -o yaml | linkerd inject - | kubectl apply -f -
 kubectl -n ingress-nginx get deployments -o yaml | linkerd inject - | kubectl apply -f -
 linkerd dashboard
 ```
+## Set up minio
+
+Reference: https://github.com/minio/minio/blob/master/docs/orchestration/kubernetes/k8s-yaml.md#minio-standalone-server-deployment
+
+* Create configmap with `MINIO_ACCESS_KEY` and `MINIO_SECRET_KEY`
+```
+kubectl create ns minio
+kubectl -n minio create cm minio-keys
+kubectl -n minio edit cm minio-keys
+```
+
+* Create PVC, deployment, service
+```
+kubectl -n minio create -f minio-standalone-deployment.yaml
+kubectl -n minio create -f minio-standalone-pvc.yaml
+kubectl -n minio create -f minio-standalone-service.yaml
+```
