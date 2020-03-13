@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+  name: cgar
+  namespace: cgar
+spec:
+  rules:
+  - host: cgar.bettercallshao.com
+    http:
+      paths:
+      - backend:
+          serviceName: cgar-service
+          servicePort: 80
+  tls:
+  - hosts:
+    - cgar.bettercallshao.com
+    secretName: letsencrypt-prod
